@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="mn">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>barter9911 — Миний бараа + Бартер санал</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <a class="brand" href="#">
+          <span class="brand__mark">B↔</span>
+          <span class="brand__name">barter9911</span>
+        </a>
+
+        <nav class="nav">
+          <a href="#shop">Бараа</a>
+          <a href="#how">Яаж ажилладаг</a>
+          <a href="#offer">Санал илгээх</a>
+        </nav>
+
+        <button class="btn btn--ghost" id="openOffer">Санал илгээх</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container hero__inner">
+        <div>
+          <h1>Миний бараа. <span class="accent">Таны санал.</span></h1>
+          <p class="muted">
+            Би өөрийн бараагаа зарна. Та бэлэн мөнгөөр авч болно, эсвэл өөрийн
+            зүйлээр бартер санал болгоорой — би зөвшөөрвөл хэлцэл хийнэ.
+          </p>
+          <div class="hero__cta">
+            <a class="btn" href="#shop">Бараа үзэх</a>
+            <button class="btn btn--ghost" id="openOffer2">Санал илгээх</button>
+          </div>
+
+          <div class="note">
+            Бартерийн жишээ: <b>Орон сууц</b>, <b>Байшин</b>, <b>Машин</b>,
+            <b>Газар</b>, <b>Бусад</b>
+          </div>
+        </div>
+
+        <div class="card big">
+          <div class="big__title">Санал илгээх дүрэм</div>
+          <ul class="list">
+            <li>Юу санал болгож байгаагаа тодорхой бич</li>
+            <li>Үнэ цэнэ + зураг нэмбэл хурдан шийднэ</li>
+            <li>Холбоо барих сувгаа үлдээ</li>
+          </ul>
+          <div class="muted small">
+            Илгээсэний дараа таны санал Netlify Forms дээр бүртгэгдэнэ.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <div class="container">
+        <div class="section__head">
+          <h2>Яаж ажилладаг вэ?</h2>
+          <p class="muted">
+            Хэрэглэгч таны бараанд санал/хүсэлт илгээж, та Netlify Forms дээрээс
+            харж шийдвэр гаргана.
+          </p>
+        </div>
+
+        <div class="grid4">
+          <div class="card">
+            <div class="step">1</div>
+            <h3>Бараа сонгох</h3>
+            <p class="muted">Сонгосон бараандаа санал илгээнэ.</p>
+          </div>
+          <div class="card">
+            <div class="step">2</div>
+            <h3>Санал бичих</h3>
+            <p class="muted">Бартер/хүсэлтээ товч тодорхой бичнэ.</p>
+          </div>
+          <div class="card">
+            <div class="step">3</div>
+            <h3>Зураг нэмэх</h3>
+            <p class="muted">Утаснаас зураг upload хийж болно.</p>
+          </div>
+          <div class="card">
+            <div class="step">4</div>
+            <h3>Шийдвэр</h3>
+            <p class="muted">Та зөвшөөрөх/татгалзана.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="shop">
+      <div class="container">
+        <div class="section__head row">
+          <div>
+            <h2>Миний бараа</h2>
+            <p class="muted">Доорх барааг та өөрийнхөөрөө өөрчилнө (demo).</p>
+          </div>
+
+          <div class="filters">
+            <input class="input" id="q" placeholder="Бараа хайх..." />
+            <select class="input" id="sort">
+              <option value="new">Шинэ нь түрүүлж</option>
+              <option value="price_desc">Үнэ (их → бага)</option>
+              <option value="price_asc">Үнэ (бага → их)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="products" class="cards"></div>
+        <div id="emptyProducts" class="empty hidden">Илэрц олдсонгүй.</div>
+      </div>
+    </section>
+
+    <section class="section" id="offer">
+      <div class="container">
+        <div class="section__head">
+          <h2>Санал / Хүсэлт илгээх</h2>
+          <p class="muted">
+            Илгээхэд таны санал Netlify Forms дээр бүртгэгдэнэ. (Та email notification
+            тохируулж болно.)
+          </p>
+        </div>
+
+        <!-- ✅ Netlify Forms -->
+        <form
+          class="form"
+          id="offerForm"
+          name="barter9911"
+          method="POST"
+          data-netlify="true"
+          data-netlify-honeypot="bot-field"
+          enctype="multipart/form-data"
+        >
+          <input type="hidden" name="form-name" value="barter9911" />
+          <p class="hidden">
+            <label>Don't fill this out: <input name="bot-field" /></label>
+          </p>
+
+          <div class="form__grid">
+            <div>
+              <label>Ямар бараанд?</label>
+              <select class="input" name="productId" id="productSelect" required></select>
+            </div>
+
+            <div>
+              <label>Саналын төрөл</label>
+              <select class="input" name="barterType" required>
+                <option value="cash">Бэлэн мөнгөөр авна</option>
+                <option value="apartment">Орон сууц</option>
+                <option value="house">Байшин</option>
+                <option value="car">Машин</option>
+                <option value="place">Газар</option>
+                <option value="other">Бусад</option>
+              </select>
+            </div>
+
+            <div class="span2">
+              <label>Санал / Хүсэлт</label>
+              <textarea
+                class="input"
+                name="offerText"
+                rows="2"
+                required
+                placeholder="Юу санал болгож байна? Юу хүсэж байна? Нөхцлөө бич."
+              ></textarea>
+            </div>
+
+            <div>
+              <label>Ойролцоох үнэ (₮) (заавал биш)</label>
+              <input class="input" name="offerValue" inputmode="numeric" placeholder="Ж: 120000000" />
+            </div>
+
+            <div>
+              <label>Зураг upload (утастай бол Camera/Files)</label>
+              <input
+                class="input"
+                type="file"
+                id="offerImage"
+                name="offerImage"
+                accept="image/*"
+                capture="environment"
+              />
+              <div class="muted small" style="margin-top: 6px">
+                * iPhone дээр “Take Photo / Photo Library”, Android дээр “Camera / Files”
+                гарч ирнэ.
+              </div>
+            </div>
+
+            <div>
+              <label>Preview</label>
+              <div id="imgPreview" class="previewBox">Зураг сонгоогүй</div>
+            </div>
+
+            <div class="span2">
+              <label>Холбоо барих (утас / Messenger / IG)</label>
+              <input class="input" name="contact" required placeholder="Ж: 99110011 / @username" />
+            </div>
+          </div>
+
+          <div class="form__actions">
+            <button class="btn" type="submit" id="sendBtn">Илгээх</button>
+            <button class="btn btn--ghost" type="button" id="resetForm">Цэвэрлэх</button>
+          </div>
+
+          <div class="muted small" id="formStatus" style="margin-top: 10px"></div>
+        </form>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <div class="muted small">© <span id="year"></span> barter9911</div>
+        <div class="muted small">Бартер хэлцэл хийхдээ үзлэг, бичиг баримтаа шалгана уу.</div>
+      </div>
+    </footer>
+
+    <script src="index.js"></script>
+  </body>
+</html>
