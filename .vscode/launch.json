@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    
+    {
+      "name": "🚀 Сервер асаах (Node)",
+      "type": "pwa-node",
+      "request": "launch",
+      "program": "${workspaceFolder}/server/server.js",
+      "cwd": "${workspaceFolder}/server",
+      "envFile": "${workspaceFolder}/server/.env",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "🌐 Chrome нээх (localhost)",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "🔥 Сервер + Chrome",
+      "configurations": ["🚀 Сервер асаах (Node)", "🌐 Chrome нээх (localhost)"]
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Админ самбар — barter9911.mn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="container topbar__inner">
+    <a class="brand" href="./">
+      <span class="brand__logo">B</span>
+      <span class="brand__text"><b>barter9911</b><small>.mn</small></span>
+    </a>
+    <nav class="nav">
+      <a class="nav__link" href="./">Нүүр</a>
+      <a class="nav__link" href="listings.html">Зарууд</a>
+      <a class="nav__link" href="add.html">Зар нэмэх</a>
+      <a class="nav__link is-active" href="admin.html">Админ</a>
+    </nav>
+    <div class="topbar__actions">
+      <button class="btn btn--ghost" id="btnTheme" type="button">🌓</button>
+      <button class="btn btn--ghost" id="btnLogout" type="button">Гарах</button>
+      <a class="btn btn--primary" href="add.html">+ Зар нэмэх</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="pageHead">
+    <div>
+      <h1>Админ самбар</h1>
+      <div class="muted" id="who">—</div>
+    </div>
+    <span class="badge" id="count">0</span>
+  </div>
+
+  <div class="panel">
+    <div class="panel__title">Зарууд (CRUD)</div>
+    <div class="panel__body">
+      <div class="row" style="margin-bottom:10px">
+        <input class="input" id="q" placeholder="Хайх..." style="max-width:360px">
+        <select class="select" id="cat" style="max-width:220px">
+          <option value="">Бүх ангилал</option>
+          <option value="Автомашин">Автомашин</option>
+          <option value="Орон сууц">Орон сууц</option>
+          <option value="Газрын талбай">Газрын талбай</option>
+          <option value="Тоног төхөөрөмж">Тоног төхөөрөмж</option>
+          <option value="Бизнес">Бизнес</option>
+          <option value="Бусад">Бусад</option>
+        </select>
+        <button class="btn btn--ghost" id="btnRefresh" type="button">Шинэчлэх</button>
+      </div>
+
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Зураг</th>
+              <th>Гарчиг</th>
+              <th>Ангилал</th>
+              <th>Үнэ</th>
+              <th>Холбоо</th>
+              <th>Үйлдэл</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="loadRow">
+        <button class="btn btn--ghost" id="btnMore" type="button">Дараагийн хуудас</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Edit Modal -->
+<div class="modal" id="editModal" aria-hidden="true">
+  <div class="modal__backdrop" data-close></div>
+  <div class="modal__card" role="dialog" aria-modal="true">
+    <button class="modal__x" type="button" data-close>✕</button>
+    <div class="modal__media">
+      <img id="eImg" alt="">
+    </div>
+    <div class="modal__body">
+      <div class="modal__meta">
+        <span class="tag">Засах</span>
+        <span class="muted" id="eId">—</span>
+      </div>
+
+      <form id="editForm">
+        <div class="field">
+          <label class="label">Гарчиг</label>
+          <input class="input" name="title" required>
+        </div>
+        <div class="field">
+          <label class="label">Тайлбар</label>
+          <textarea class="textarea" name="description" required></textarea>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label class="label">Ангилал</label>
+            <select class="select" name="category" required>
+              <option value="Автомашин">Автомашин</option>
+              <option value="Орон сууц">Орон сууц</option>
+              <option value="Газрын талбай">Газрын талбай</option>
+              <option value="Тоног төхөөрөмж">Тоног төхөөрөмж</option>
+              <option value="Бизнес">Бизнес</option>
+              <option value="Бусад">Бусад</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label">Утас</label>
+            <input class="input" name="phone" required>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label class="label">Бартер (₮)</label>
+            <input class="input" name="barterPrice" type="number" min="0" required>
+          </div>
+          <div class="field">
+            <label class="label">Бэлэн (₮)</label>
+            <input class="input" name="cashPrice" type="number" min="0" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Шинэ зураг (сонголттой)</label>
+          <input class="input" name="image" type="file" accept="image/*">
+          <div class="muted" style="margin-top:6px;font-size:12px">Хоосон бол хуучин зураг хэвээр үлдэнэ.</div>
+        </div>
+
+        <div class="modal__actions">
+          <button class="btn btn--primary" id="btnSave" type="submit">Хадгалах</button>
+          <button class="btn btn--ghost" type="button" data-close>Болих</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="admin.js"></script>
+<script>
+  const saved = localStorage.getItem("theme");
+  if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+  document.getElementById("btnTheme")?.addEventListener("click", ()=>{
+    const cur = document.documentElement.getAttribute("data-theme");
+    const next = cur === "light" ? "" : "light";
+    if (next) document.documentElement.setAttribute("data-theme", next);
+    else document.documentElement.removeAttribute("data-theme");
+    localStorage.setItem("theme", next || "dark");
+  });
+</script>
+</body>
+</html>

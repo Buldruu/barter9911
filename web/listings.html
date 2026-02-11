@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Зарууд — barter9911.mn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="container topbar__inner">
+    <a class="brand" href="./">
+      <span class="brand__logo">B</span>
+      <span class="brand__text"><b>barter9911</b><small>.mn</small></span>
+    </a>
+    <nav class="nav">
+      <a class="nav__link" href="./">Нүүр</a>
+      <a class="nav__link is-active" href="listings.html">Зарууд</a>
+      <a class="nav__link" href="add.html">Зар нэмэх</a>
+    </nav>
+    <div class="topbar__actions">
+      <button class="btn btn--ghost" id="btnTheme" type="button">🌓</button>
+      <a class="btn btn--ghost" href="login.html">Админ</a>
+      <a class="btn btn--primary" href="add.html">+ Зар нэмэх</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="pageHead">
+    <div>
+      <h1>Зарууд</h1>
+      <div class="muted">Firestore live listings — бодитоор шинэчлэгдэнэ</div>
+    </div>
+    <span class="badge" id="countBadge">0 үр дүн</span>
+  </div>
+
+  <div class="layout">
+    <aside class="panel">
+      <div class="panel__title">Фильтер</div>
+      <div class="panel__body">
+        <div class="field">
+          <label class="label">Хайлт</label>
+          <input class="input" id="q" placeholder="ж: Land Cruiser, 2 өрөө, экскаватор" />
+          <div class="muted" style="margin-top:6px;font-size:12px">
+            Тайлбар: Хайлт нь татсан өгөгдөл дээр client-side хийгдэнэ.
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Ангилал</label>
+          <select class="select" id="cat">
+            <option value="">Бүх ангилал</option>
+            <option value="Автомашин">Автомашин</option>
+            <option value="Орон сууц">Орон сууц</option>
+            <option value="Газрын талбай">Газрын талбай</option>
+            <option value="Тоног төхөөрөмж">Тоног төхөөрөмж</option>
+            <option value="Бизнес">Бизнес</option>
+            <option value="Бусад">Бусад</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="label">Эрэмбэлэх</label>
+          <select class="select" id="sort">
+            <option value="new">Шинээр нэмэгдсэн</option>
+            <option value="barterHigh">Бартер: өндөр → бага</option>
+            <option value="barterLow">Бартер: бага → өндөр</option>
+            <option value="cashHigh">Бэлэн: өндөр → бага</option>
+            <option value="cashLow">Бэлэн: бага → өндөр</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <button class="btn btn--ghost" id="btnReset" type="button">Цэвэрлэх</button>
+          <button class="btn btn--primary" id="btnApply" type="button">Хэрэгжүүлэх</button>
+        </div>
+      </div>
+    </aside>
+
+    <section>
+      <div class="grid" id="grid"></div>
+      <div class="loadRow">
+        <button class="btn btn--ghost" id="btnMore" type="button">Дараагийн хуудас</button>
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal__backdrop" data-close></div>
+  <div class="modal__card" role="dialog" aria-modal="true">
+    <button class="modal__x" type="button" data-close>✕</button>
+    <div class="modal__media"><img id="mImg" alt=""></div>
+    <div class="modal__body">
+      <div class="modal__meta">
+        <span class="tag" id="mCat">Ангилал</span>
+        <span class="muted" id="mDate">—</span>
+      </div>
+      <h3 id="mTitle">—</h3>
+      <p class="muted" id="mDesc">—</p>
+      <div class="priceRow">
+        <div class="price"><span>Бартер үнэ</span><b id="mBarter">—</b></div>
+        <div class="price"><span>Бэлэн мөнгө</span><b id="mCash">—</b></div>
+      </div>
+      <div class="modal__actions">
+        <a class="btn btn--primary" id="mCall" href="#">Холбоо барих</a>
+        <button class="btn btn--ghost" type="button" data-close>Хаах</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="listings.js"></script>
+<script>
+  // theme
+  const saved = localStorage.getItem("theme");
+  if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+  document.getElementById("btnTheme")?.addEventListener("click", ()=>{
+    const cur = document.documentElement.getAttribute("data-theme");
+    const next = cur === "light" ? "" : "light";
+    if (next) document.documentElement.setAttribute("data-theme", next);
+    else document.documentElement.removeAttribute("data-theme");
+    localStorage.setItem("theme", next || "dark");
+  });
+</script>
+</body>
+</html>

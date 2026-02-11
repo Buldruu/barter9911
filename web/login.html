@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Админ нэвтрэх — barter9911.mn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="topbar">
+  <div class="container topbar__inner">
+    <a class="brand" href="./">
+      <span class="brand__logo">B</span>
+      <span class="brand__text"><b>barter9911</b><small>.mn</small></span>
+    </a>
+    <nav class="nav">
+      <a class="nav__link" href="./">Нүүр</a>
+      <a class="nav__link" href="listings.html">Зарууд</a>
+      <a class="nav__link" href="add.html">Зар нэмэх</a>
+    </nav>
+    <div class="topbar__actions">
+      <button class="btn btn--ghost" id="btnTheme" type="button">🌓</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="pageHead">
+    <div>
+      <h1>Админ нэвтрэх</h1>
+      <div class="muted">Email/Password ашиглана</div>
+    </div>
+    <span class="badge" id="status">—</span>
+  </div>
+
+  <div class="panel">
+    <div class="panel__title">Нэвтрэх</div>
+    <div class="panel__body">
+      <form id="form" class="row" style="align-items:flex-end">
+        <div class="field" style="min-width:260px">
+          <label class="label">Email</label>
+          <input class="input" name="email" type="email" required placeholder="admin@barter9911.mn">
+        </div>
+        <div class="field" style="min-width:260px">
+          <label class="label">Нууц үг</label>
+          <input class="input" name="password" type="password" required placeholder="••••••••">
+        </div>
+        <button class="btn btn--primary" id="btnLogin" type="submit">Нэвтрэх</button>
+      </form>
+
+      <div class="muted" style="margin-top:10px;font-size:12px">
+        Сануулга: зөвхөн allowlist-д байгаа email админ болж нэвтэрнэ.
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="js/login.js"></script>
+<script>
+  const saved = localStorage.getItem("theme");
+  if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
+  document.getElementById("btnTheme")?.addEventListener("click", ()=>{
+    const cur = document.documentElement.getAttribute("data-theme");
+    const next = cur === "light" ? "" : "light";
+    if (next) document.documentElement.setAttribute("data-theme", next);
+    else document.documentElement.removeAttribute("data-theme");
+    localStorage.setItem("theme", next || "dark");
+  });
+</script>
+</body>
+</html>
