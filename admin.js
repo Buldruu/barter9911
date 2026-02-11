@@ -1,12 +1,12 @@
 // js/admin.js
-import { db } from "./web/firebase.js";
+import { db } from "firebase.js";
 import {
   requireAdmin,
   watchAuth,
   isAllowedAdmin,
   adminLogout,
-} from "./web/auth.js";
-import { uploadToCloudinary, optimizeCloudinaryUrl } from "./web/cloudinary.js";
+} from "auth.js";
+import { uploadToCloudinary, optimizeCloudinaryUrl } from "cloudinary.js";
 import {
   collection,
   query,
