@@ -1,7 +1,7 @@
 // js/add.js (multi-image)
-import { db } from "./firebase.js";
-import { uploadToCloudinary } from "./cloudinary.js";
-import { requireAdmin, watchAuth, isAllowedAdmin } from "./auth.js";
+import { db } from "./web/firebase.js";
+import { uploadToCloudinary } from "./web/cloudinary.js";
+import { requireAdmin, watchAuth, isAllowedAdmin } from "./web/auth.js";
 import {
   collection,
   addDoc,
