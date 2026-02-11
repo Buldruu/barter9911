@@ -190,11 +190,13 @@ function render() {
 }
 
 function openEdit(item) {
-  state.editing = item;
+  state.editing = { ...item, images: [...(item.images || [])] };
   $("#eId").textContent = item.id;
 
-  const img = item.images?.[0] ? optimizeCloudinaryUrl(item.images[0]) : "";
-  $("#eImg").src = img;
+  const main = state.editing.images?.[0]
+    ? optimizeCloudinaryUrl(state.editing.images[0])
+    : "";
+  $("#eImg").src = main;
 
   const f = $("#editForm");
   f.title.value = item.title || "";
@@ -203,11 +205,14 @@ function openEdit(item) {
   f.phone.value = item.phone || "";
   f.barterPrice.value = Number(item.barterPrice || 0);
   f.cashPrice.value = Number(item.cashPrice || 0);
+  f.featured.checked = !!item.featured;
   f.image.value = "";
 
+  renderGallery();
   $("#editModal").classList.add("is-open");
   $("#editModal").setAttribute("aria-hidden", "false");
 }
+
 
 function closeEdit() {
   $("#editModal").classList.remove("is-open");
@@ -249,13 +254,21 @@ $("#editForm").addEventListener("submit", async (e) => {
 
   try {
     const f = e.target;
-    let images = item.images || [];
+    const append = document.getElementById("appendImgs")?.checked ?? true;
 
-    const newFile = f.image.files?.[0];
-    if (newFile) {
-      const url = await uploadToCloudinary(newFile);
-      images = [url];
+    let images = [...(item.images || [])];
+
+    const newFiles = [...(f.image.files || [])].slice(0, 8);
+    if (newFiles.length) {
+      const newUrls = await Promise.all(
+        newFiles.map((file) => uploadToCloudinary(file)),
+      );
+      images = append ? [...images, ...newUrls] : [...newUrls];
+      // primary image = first
     }
+
+    // limit хамгаалалт
+    images = images.slice(0, 12); // хүсвэл 20 болго
 
     const patch = {
       title: f.title.value.trim(),
@@ -264,12 +277,12 @@ $("#editForm").addEventListener("submit", async (e) => {
       phone: f.phone.value.trim(),
       barterPrice: Number(f.barterPrice.value || 0),
       cashPrice: Number(f.cashPrice.value || 0),
+      featured: !!f.featured.checked,
       images,
     };
 
     await updateDoc(doc(db, "listings", item.id), patch);
 
-    // local update
     state.items = state.items.map((x) =>
       x.id === item.id ? { ...x, ...patch } : x,
     );
@@ -284,6 +297,62 @@ $("#editForm").addEventListener("submit", async (e) => {
     btn.textContent = "Хадгалах";
   }
 });
+
+function renderGallery() {
+  const box = document.getElementById("gallery");
+  if (!box || !state.editing) return;
+
+  const imgs = state.editing.images || [];
+  if (!imgs.length) {
+    box.innerHTML = `<div class="muted">Зураггүй</div>`;
+    return;
+  }
+
+  box.innerHTML = imgs
+    .map(
+      (u, idx) => `
+    <div style="position:relative">
+      <img class="thumb" src="${optimizeCloudinaryUrl(u)}" style="width:92px;height:72px;border-radius:14px">
+      <button type="button" data-rm="${idx}"
+        class="btn btn--ghost"
+        style="position:absolute;right:-6px;top:-6px;padding:6px 8px;border-radius:12px;font-weight:900">
+        ✕
+      </button>
+      <button type="button" data-main="${idx}"
+        class="btn btn--ghost"
+        style="margin-top:6px;padding:6px 10px;border-radius:12px;font-size:12px">
+        Гол болгох
+      </button>
+    </div>
+  `,
+    )
+    .join("");
+
+  box.onclick = (e) => {
+    const rm = e.target.closest("[data-rm]")?.dataset.rm;
+    const main = e.target.closest("[data-main]")?.dataset.main;
+
+    if (rm !== undefined) {
+      state.editing.images.splice(Number(rm), 1);
+      const first = state.editing.images?.[0]
+        ? optimizeCloudinaryUrl(state.editing.images[0])
+        : "";
+      document.getElementById("eImg").src = first;
+      renderGallery();
+    }
+
+    if (main !== undefined) {
+      const i = Number(main);
+      const arr = state.editing.images;
+      if (arr[i]) {
+        const picked = arr.splice(i, 1)[0];
+        arr.unshift(picked); // move to front as primary
+        document.getElementById("eImg").src = optimizeCloudinaryUrl(arr[0]);
+        renderGallery();
+      }
+    }
+  };
+}
 
 $("#btnMore").addEventListener("click", () => fetchPage({ reset: false }));
 

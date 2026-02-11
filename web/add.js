@@ -1,4 +1,4 @@
-// js/add.js
+// js/add.js (multi-image)
 import { db } from "./firebase.js";
 import { uploadToCloudinary } from "./cloudinary.js";
 import { requireAdmin, watchAuth, isAllowedAdmin } from "./auth.js";
@@ -33,14 +33,14 @@ const pText = $("#pText");
 const fileInput = form.image;
 
 fileInput.addEventListener("change", () => {
-  const f = fileInput.files?.[0];
-  if (!f) {
+  const files = [...(fileInput.files || [])];
+  if (!files.length) {
     preview.removeAttribute("src");
     pText.textContent = "Зураг сонгоогүй байна.";
     return;
   }
-  preview.src = URL.createObjectURL(f);
-  pText.textContent = `${f.name} — ${(f.size / 1024 / 1024).toFixed(2)}MB`;
+  preview.src = URL.createObjectURL(files[0]);
+  pText.textContent = `${files.length} зураг сонгосон`;
 });
 
 form.addEventListener("submit", async (e) => {
@@ -50,10 +50,11 @@ form.addEventListener("submit", async (e) => {
   btn.textContent = "Upload хийж байна...";
 
   try {
-    const file = fileInput.files?.[0];
-    if (!file) throw new Error("Зураг сонгоогүй.");
+    const files = [...(fileInput.files || [])].slice(0, 8);
+    if (!files.length) throw new Error("Зураг сонгоогүй.");
 
-    const imageUrl = await uploadToCloudinary(file);
+    // parallel upload
+    const urls = await Promise.all(files.map((f) => uploadToCloudinary(f)));
 
     const payload = {
       title: form.title.value.trim(),
@@ -62,7 +63,8 @@ form.addEventListener("submit", async (e) => {
       phone: form.phone.value.trim(),
       barterPrice: safeNum(form.barterPrice.value),
       cashPrice: safeNum(form.cashPrice.value),
-      images: [imageUrl],
+      images: urls, // ✅ gallery
+      featured: false, // ✅ default (admin дээр асаана)
       createdAt: serverTimestamp(),
     };
 

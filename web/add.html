@@ -1,126 +1,175 @@
 <!doctype html>
 <html lang="mn">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Зар нэмэх — barter9911.mn</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
-<header class="topbar">
-  <div class="container topbar__inner">
-    <a class="brand" href="./">
-      <span class="brand__logo">B</span>
-      <span class="brand__text"><b>barter9911</b><small>.mn</small></span>
-    </a>
-    <nav class="nav">
-      <a class="nav__link" href="./">Нүүр</a>
-      <a class="nav__link" href="listings.html">Зарууд</a>
-      <a class="nav__link is-active" href="add.html">Зар нэмэх</a>
-    </nav>
-    <div class="topbar__actions">
-      <button class="btn btn--ghost" id="btnTheme" type="button">🌓</button>
-      <a class="btn btn--ghost" href="admin.html">Админ самбар</a>
-    </div>
-  </div>
-</header>
-
-<main class="container">
-  <div class="pageHead">
-    <div>
-      <h1>Зар нэмэх</h1>
-      <div class="muted">Зөвхөн админ нэмэх эрхтэй</div>
-    </div>
-    <span class="badge" id="who">—</span>
-  </div>
-
-  <div class="panel">
-    <div class="panel__title">Мэдээлэл</div>
-    <div class="panel__body">
-      <form id="form" class="row" style="align-items:flex-start">
-        <div style="flex:1; min-width:280px">
-          <div class="field">
-            <label class="label">Гарчиг</label>
-            <input class="input" name="title" required placeholder="ж: Land Cruiser 200 — Бартер" />
-          </div>
-
-          <div class="field">
-            <label class="label">Тайлбар</label>
-            <textarea class="textarea" name="description" required placeholder="Товч тодорхой тайлбар..."></textarea>
-          </div>
-
-          <div class="row">
-            <div class="field">
-              <label class="label">Ангилал</label>
-              <select class="select" name="category" required>
-                <option value="Автомашин">Автомашин</option>
-                <option value="Орон сууц">Орон сууц</option>
-                <option value="Газрын талбай">Газрын талбай</option>
-                <option value="Тоног төхөөрөмж">Тоног төхөөрөмж</option>
-                <option value="Бизнес">Бизнес</option>
-                <option value="Бусад">Бусад</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label class="label">Утас</label>
-              <input class="input" name="phone" required placeholder="ж: 99119911" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="field">
-              <label class="label">Бартер үнэ (₮)</label>
-              <input class="input" name="barterPrice" type="number" min="0" required />
-            </div>
-            <div class="field">
-              <label class="label">Бэлэн мөнгө (₮)</label>
-              <input class="input" name="cashPrice" type="number" min="0" required />
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="label">Зураг (Cloudinary)</label>
-            <input class="input" name="image" type="file" accept="image/*" required />
-            <div class="muted" style="margin-top:6px;font-size:12px">Зөвлөмж: 1200px+ өргөн зураг</div>
-          </div>
-
-          <div class="row">
-            <button class="btn btn--primary" id="btnSubmit" type="submit">Нэмэх</button>
-            <a class="btn btn--ghost" href="admin.html">Админ руу</a>
-          </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Зар нэмэх — barter9911.mn</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <a class="brand" href="./">
+          <span class="brand__logo">B</span>
+          <span class="brand__text"><b>barter9911</b><small>.mn</small></span>
+        </a>
+        <nav class="nav">
+          <a class="nav__link" href="./">Нүүр</a>
+          <a class="nav__link" href="listings.html">Зарууд</a>
+          <a class="nav__link is-active" href="add.html">Зар нэмэх</a>
+        </nav>
+        <div class="topbar__actions">
+          <button class="btn btn--ghost" id="btnTheme" type="button">🌓</button>
+          <a class="btn btn--ghost" href="admin.html">Админ самбар</a>
         </div>
+      </div>
+    </header>
 
-        <div style="flex:1; min-width:280px">
-          <div class="field">
-            <label class="label">Preview</label>
-            <div class="panel" style="padding:12px">
-              <img id="preview" class="thumb" style="width:100%;height:260px;border-radius:18px" alt="">
-              <div class="muted" id="pText" style="margin-top:10px">Зураг сонгоогүй байна.</div>
-            </div>
-          </div>
+    <main class="container">
+      <div class="pageHead">
+        <div>
+          <h1>Зар нэмэх</h1>
+          <div class="muted">Зөвхөн админ нэмэх эрхтэй</div>
         </div>
-      </form>
-    </div>
-  </div>
-</main>
+        <span class="badge" id="who">—</span>
+      </div>
 
-<div class="toast" id="toast"></div>
+      <div class="panel">
+        <div class="panel__title">Мэдээлэл</div>
+        <div class="panel__body">
+          <form id="form" class="row" style="align-items: flex-start">
+            <div style="flex: 1; min-width: 280px">
+              <div class="field">
+                <label class="label">Гарчиг</label>
+                <input
+                  class="input"
+                  name="title"
+                  required
+                  placeholder="ж: Land Cruiser 200 — Бартер"
+                />
+              </div>
 
-<script type="module" src="add.js"></script>
-<script>
-  const saved = localStorage.getItem("theme");
-  if (saved === "light") document.documentElement.setAttribute("data-theme", "light");
-  document.getElementById("btnTheme")?.addEventListener("click", ()=>{
-    const cur = document.documentElement.getAttribute("data-theme");
-    const next = cur === "light" ? "" : "light";
-    if (next) document.documentElement.setAttribute("data-theme", next);
-    else document.documentElement.removeAttribute("data-theme");
-    localStorage.setItem("theme", next || "dark");
-  });
-</script>
-</body>
+              <div class="field">
+                <label class="label">Тайлбар</label>
+                <textarea
+                  class="textarea"
+                  name="description"
+                  required
+                  placeholder="Товч тодорхой тайлбар..."
+                ></textarea>
+              </div>
+
+              <div class="row">
+                <div class="field">
+                  <label class="label">Ангилал</label>
+                  <select class="select" name="category" required>
+                    <option value="Автомашин">Автомашин</option>
+                    <option value="Орон сууц">Орон сууц</option>
+                    <option value="Газрын талбай">Газрын талбай</option>
+                    <option value="Тоног төхөөрөмж">Тоног төхөөрөмж</option>
+                    <option value="Бизнес">Бизнес</option>
+                    <option value="Бусад">Бусад</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label class="label">Утас</label>
+                  <input
+                    class="input"
+                    name="phone"
+                    required
+                    placeholder="ж: 99119911"
+                  />
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="field">
+                  <label class="label">Бартер үнэ (₮)</label>
+                  <input
+                    class="input"
+                    name="barterPrice"
+                    type="number"
+                    min="0"
+                    required
+                  />
+                </div>
+                <div class="field">
+                  <label class="label">Бэлэн мөнгө (₮)</label>
+                  <input
+                    class="input"
+                    name="cashPrice"
+                    type="number"
+                    min="0"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Зураг (Cloudinary)</label>
+                <input
+                  class="input"
+                  name="image"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  required
+                />
+                <div class="muted" style="margin-top: 6px; font-size: 12px">
+                  Олон зураг сонгож болно (ихдээ 8 зураг зөвлөе).
+                </div>
+              </div>
+
+              <div class="row">
+                <button class="btn btn--primary" id="btnSubmit" type="submit">
+                  Нэмэх
+                </button>
+                <a class="btn btn--ghost" href="admin.html">Админ руу</a>
+              </div>
+            </div>
+
+            <div style="flex: 1; min-width: 280px">
+              <div class="field">
+                <label class="label">Preview</label>
+                <div class="panel" style="padding: 12px">
+                  <img
+                    id="preview"
+                    class="thumb"
+                    style="width: 100%; height: 260px; border-radius: 18px"
+                    alt=""
+                  />
+                  <div class="muted" id="pText" style="margin-top: 10px">
+                    Зураг сонгоогүй байна.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script type="module" src="add.js"></script>
+    <script>
+      const saved = localStorage.getItem("theme");
+      if (saved === "light")
+        document.documentElement.setAttribute("data-theme", "light");
+      document.getElementById("btnTheme")?.addEventListener("click", () => {
+        const cur = document.documentElement.getAttribute("data-theme");
+        const next = cur === "light" ? "" : "light";
+        if (next) document.documentElement.setAttribute("data-theme", next);
+        else document.documentElement.removeAttribute("data-theme");
+        localStorage.setItem("theme", next || "dark");
+      });
+    </script>
+  </body>
 </html>
