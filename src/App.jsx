@@ -604,7 +604,7 @@ export default function App() {
                     marginBottom: 16,
                   }}
                 >
-                  Хэрэгцээгүй зүйлсээ
+                  Холио солио
                   <br />
                   <span
                     style={{
@@ -613,7 +613,7 @@ export default function App() {
                       WebkitTextFillColor: "transparent",
                     }}
                   >
-                    солилцоорой
+                    хийе
                   </span>
                 </h1>
                 <p
