@@ -1,0 +1,71 @@
+rules_version = '2';
+
+// Firestore security rules for Barter9911.mn
+// Deploy with:  firebase deploy --only firestore:rules
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // An admin is a user whose profile document has role == 'admin'.
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // User profiles — public read (name/phone are shown to contact a seller),
+    // but a user may only create/edit their own profile.
+    match /users/{userId} {
+      allow read: if true;
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Listings — public read; owners manage their own; admins moderate all.
+    match /listings/{id} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    // Auctions — public read. Signed-in users may update them because placing a
+    // bid runs in a transaction that updates currentPrice / highestBidder / status.
+    // (Tighten this with field validation for production if desired.)
+    match /auctions/{id} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isAdmin();
+    }
+
+    // Bids — public read (bid history); a user may only create a bid as themselves.
+    match /bids/{id} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAdmin();
+    }
+
+    // Barter offers — readable/creatable by signed-in users.
+    match /barterOffers/{id} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.fromUserId == request.auth.uid;
+      allow update: if isSignedIn();
+      allow delete: if isAdmin();
+    }
+
+    // Categories — public read; only admins manage them.
+    match /categories/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
