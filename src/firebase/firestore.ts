@@ -250,6 +250,30 @@ export async function setListingStatus(
 
 export async function deleteListing(id: string): Promise<void> {
   const db = requireDb()
+  // Clean up any auction tied to this listing so it does not keep counting
+  // down after the listing is gone. We cancel it first (always permitted),
+  // then try to delete it outright (permitted for the owner/admin).
+  try {
+    const aSnap = await getDocs(
+      query(collection(db, 'auctions'), where('listingId', '==', id))
+    )
+    for (const a of aSnap.docs) {
+      try {
+        await updateDoc(doc(db, 'auctions', a.id), {
+          status: 'cancelled' as AuctionStatus,
+        })
+      } catch {
+        /* ignore */
+      }
+      try {
+        await deleteDoc(doc(db, 'auctions', a.id))
+      } catch {
+        /* ignore */
+      }
+    }
+  } catch {
+    /* ignore auction cleanup errors */
+  }
   await deleteDoc(doc(db, 'listings', id))
 }
 

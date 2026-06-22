@@ -44,7 +44,12 @@ service cloud.firestore {
       allow read: if true;
       allow create: if isSignedIn();
       allow update: if isSignedIn();
-      allow delete: if isAdmin();
+      // Admin, or the owner of the underlying listing, may delete an auction.
+      allow delete: if isAdmin() || (
+        isSignedIn()
+        && exists(/databases/$(database)/documents/listings/$(resource.data.listingId))
+        && get(/databases/$(database)/documents/listings/$(resource.data.listingId)).data.userId == request.auth.uid
+      );
     }
 
     // Bids — public read (bid history); a user may only create a bid as themselves.

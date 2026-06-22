@@ -24,7 +24,7 @@ export function Auction() {
   )
 
   const { active, ended } = useMemo(() => {
-    const list = data ?? []
+    const list = (data ?? []).filter((a) => a.status !== 'cancelled')
     return {
       active: list.filter((a) => a.status === 'active' && Date.now() < a.endTime),
       ended: list.filter((a) => a.status !== 'active' || Date.now() >= a.endTime),
