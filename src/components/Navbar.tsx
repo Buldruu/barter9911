@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
+  ChevronDown,
   LayoutDashboard,
   LogOut,
   Menu,
-  Plus,
   Repeat,
   Shield,
   X,
@@ -23,9 +23,7 @@ const NAV_LINKS: { to: string; key: TranslationKey }[] = [
   { to: '/barter', key: 'nav_barter' },
   { to: '/auction', key: 'nav_auction' },
   { to: '/marketplace', key: 'nav_marketplace' },
-  { to: '/post', key: 'nav_post' },
   { to: '/about', key: 'nav_about' },
-  { to: '/contact', key: 'nav_contact' },
 ]
 
 function LanguageToggle() {
@@ -66,6 +64,94 @@ function Brand({ onClick }: { onClick?: () => void }) {
         <span className="text-sm font-bold text-slate-400">.mn</span>
       </span>
     </Link>
+  )
+}
+
+function ProfileMenu() {
+  const { t } = useLanguage()
+  const { profile, isAdmin } = useAuth()
+  const navigate = useNavigate()
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function onDoc(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', onDoc)
+    return () => document.removeEventListener('mousedown', onDoc)
+  }, [])
+
+  async function handleLogout() {
+    try {
+      await logout()
+    } catch {
+      /* ignore */
+    }
+    setOpen(false)
+    navigate('/')
+  }
+
+  const name = profile?.name ?? 'Member'
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="flex items-center gap-2 rounded-full border border-slate-200 bg-white py-1 pl-1 pr-2.5 transition-colors hover:border-primary-300 focus-ring"
+      >
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-600 text-sm font-bold text-white">
+          {name.charAt(0).toUpperCase()}
+        </span>
+        <span className="max-w-[120px] truncate text-sm font-semibold text-navy">
+          {name}
+        </span>
+        <ChevronDown
+          className={cn('h-4 w-4 text-slate-400 transition-transform', open && 'rotate-180')}
+        />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.98 }}
+            transition={{ duration: 0.15 }}
+            className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-slate-100 bg-white shadow-soft"
+          >
+            <div className="border-b border-slate-100 px-4 py-3">
+              <p className="truncate text-sm font-bold text-navy">{name}</p>
+              <p className="truncate text-xs text-slate-400">{profile?.email}</p>
+            </div>
+            <div className="p-1.5">
+              <Link
+                to="/dashboard"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-navy transition-colors hover:bg-slate-100"
+              >
+                <LayoutDashboard className="h-4 w-4" /> {t('nav_dashboard')}
+              </Link>
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-amber-600 transition-colors hover:bg-amber-50"
+                >
+                  <Shield className="h-4 w-4" /> {t('nav_admin')}
+                </Link>
+              )}
+              <button
+                onClick={handleLogout}
+                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-rose-600 transition-colors hover:bg-rose-50"
+              >
+                <LogOut className="h-4 w-4" /> {t('auth_logout')}
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   )
 }
 
@@ -111,26 +197,7 @@ export function Navbar() {
         <div className="hidden items-center gap-2 lg:flex">
           <LanguageToggle />
           {firebaseUser ? (
-            <>
-              {isAdmin && (
-                <Link
-                  to="/admin"
-                  className={buttonStyles('ghost', 'sm', 'text-amber-600')}
-                >
-                  <Shield className="h-4 w-4" /> {t('nav_admin')}
-                </Link>
-              )}
-              <Link to="/dashboard" className={buttonStyles('outline', 'sm')}>
-                <LayoutDashboard className="h-4 w-4" /> {t('nav_dashboard')}
-              </Link>
-              <button
-                onClick={handleLogout}
-                className={buttonStyles('ghost', 'sm')}
-                title={t('auth_logout')}
-              >
-                <LogOut className="h-4 w-4" />
-              </button>
-            </>
+            <ProfileMenu />
           ) : (
             <>
               <Link to="/login" className={buttonStyles('ghost', 'sm')}>
@@ -211,15 +278,30 @@ export function Navbar() {
               </div>
 
               <div className="border-t border-slate-100 px-4 py-4">
-                <Link
-                  to="/post"
-                  onClick={() => setOpen(false)}
-                  className={buttonStyles('primary', 'md', 'w-full mb-2')}
-                >
-                  <Plus className="h-4 w-4" /> {t('nav_post')}
-                </Link>
                 {firebaseUser ? (
                   <div className="space-y-2">
+                    {profile && (
+                      <div className="mb-2 flex items-center gap-3 rounded-xl bg-slate-50 px-3 py-2.5">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-600 text-sm font-bold text-white">
+                          {(profile.name ?? 'M').charAt(0).toUpperCase()}
+                        </span>
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-bold text-navy">
+                            {profile.name}
+                          </p>
+                          <p className="truncate text-xs text-slate-400">
+                            {profile.email}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setOpen(false)}
+                      className={buttonStyles('outline', 'md', 'w-full')}
+                    >
+                      <LayoutDashboard className="h-4 w-4" /> {t('nav_dashboard')}
+                    </Link>
                     {isAdmin && (
                       <Link
                         to="/admin"
@@ -229,24 +311,12 @@ export function Navbar() {
                         <Shield className="h-4 w-4" /> {t('nav_admin')}
                       </Link>
                     )}
-                    <Link
-                      to="/dashboard"
-                      onClick={() => setOpen(false)}
-                      className={buttonStyles('outline', 'md', 'w-full')}
-                    >
-                      <LayoutDashboard className="h-4 w-4" /> {t('nav_dashboard')}
-                    </Link>
                     <button
                       onClick={handleLogout}
                       className={buttonStyles('ghost', 'md', 'w-full')}
                     >
                       <LogOut className="h-4 w-4" /> {t('auth_logout')}
                     </button>
-                    {profile && (
-                      <p className="pt-1 text-center text-xs text-slate-400">
-                        {profile.name} · {profile.email}
-                      </p>
-                    )}
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-2">

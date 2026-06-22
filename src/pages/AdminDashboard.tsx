@@ -5,6 +5,7 @@ import {
   Gavel,
   Plus,
   Repeat,
+  ShieldCheck,
   Trash2,
   Users,
   X,
@@ -27,6 +28,7 @@ import {
   getAllUsers,
   getCategories,
   setListingStatus,
+  setUserRole,
 } from '../firebase/firestore'
 import { classForStatus, cn, formatDate } from '../lib/utils'
 
@@ -108,6 +110,11 @@ export function AdminDashboard() {
     await addCategory(newCat.trim())
     setNewCat('')
     categories.reload()
+  }
+
+  async function toggleRole(uid: string, role: 'user' | 'admin') {
+    await setUserRole(uid, role)
+    users.reload()
   }
 
   return (
@@ -225,6 +232,69 @@ export function AdminDashboard() {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Manage users */}
+        <div className="mt-8">
+          <h2 className="mb-4 text-lg font-bold text-navy">{t('ad_users')}</h2>
+          {usersList.length === 0 ? (
+            <EmptyState title={t('c_noResults')} />
+          ) : (
+            <div className="overflow-x-auto rounded-2xl border border-slate-100">
+              <table className="w-full min-w-[640px] text-left text-sm">
+                <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                  <tr>
+                    <th className="px-4 py-3 font-semibold">{t('au_name')}</th>
+                    <th className="px-4 py-3 font-semibold">{t('au_email')}</th>
+                    <th className="px-4 py-3 font-semibold">{t('ad_role')}</th>
+                    <th className="px-4 py-3 text-right font-semibold">
+                      {t('ad_actions')}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {usersList.map((u) => (
+                    <tr key={u.id} className="hover:bg-slate-50/60">
+                      <td className="px-4 py-3 font-medium text-navy">{u.name}</td>
+                      <td className="px-4 py-3 text-slate-500">{u.email}</td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={cn(
+                            'rounded-md px-2 py-0.5 text-xs font-semibold capitalize',
+                            u.role === 'admin'
+                              ? 'bg-amber-100 text-amber-700'
+                              : 'bg-slate-100 text-slate-600'
+                          )}
+                        >
+                          {u.role}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex justify-end">
+                          {u.role === 'admin' ? (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => toggleRole(u.id, 'user')}
+                            >
+                              {t('ad_removeAdmin')}
+                            </Button>
+                          ) : (
+                            <Button
+                              size="sm"
+                              onClick={() => toggleRole(u.id, 'admin')}
+                            >
+                              <ShieldCheck className="h-4 w-4" /> {t('ad_makeAdmin')}
+                            </Button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
 
         {/* Pending approvals */}

@@ -4,6 +4,7 @@ import { PageTransition } from '../components/PageTransition'
 import { ScrollReveal } from '../components/ScrollReveal'
 import { buttonStyles } from '../components/ui/Button'
 import { useLanguage } from '../i18n/LanguageContext'
+import { ContactSection } from '../components/ContactSection'
 
 export function About() {
   const { t } = useLanguage()
@@ -82,6 +83,9 @@ export function About() {
           ))}
         </div>
       </section>
+
+      {/* Contact (merged from the old Contact page) */}
+      <ContactSection />
 
       {/* CTA */}
       <section className="container-app py-16 text-center">

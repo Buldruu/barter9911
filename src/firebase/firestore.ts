@@ -164,7 +164,7 @@ export async function createListing(input: NewListing): Promise<string> {
     ...input,
     wantedExchange: input.wantedExchange ?? '',
     fixedPrice: input.fixedPrice ?? null,
-    status: 'pending' as ListingStatus,
+    status: 'active' as ListingStatus,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   })
@@ -482,6 +482,11 @@ export async function updateUserProfile(
 ): Promise<void> {
   const db = requireDb()
   await setDoc(doc(db, 'users', uid), patch, { merge: true })
+}
+
+export async function setUserRole(uid: string, role: Role): Promise<void> {
+  const db = requireDb()
+  await updateDoc(doc(db, 'users', uid), { role })
 }
 
 // ---------------------------------------------------------------------------
