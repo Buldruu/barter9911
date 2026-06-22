@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
+import { Plus } from 'lucide-react'
 import { PageTransition } from './PageTransition'
+import { buttonStyles } from './ui/Button'
 import { FilterBar } from './FilterBar'
 import { ListingCard } from './ListingCard'
 import { ConfigNotice } from './ConfigNotice'
@@ -63,11 +65,16 @@ export function ListingExplorer({ type, title, subtitle }: ListingExplorerProps)
   return (
     <PageTransition>
       <div className="container-app py-10">
-        <div className="mb-8">
-          <h1 className="text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
-            {title}
-          </h1>
-          <p className="mt-2 text-slate-500">{subtitle}</p>
+        <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
+              {title}
+            </h1>
+            <p className="mt-2 text-slate-500">{subtitle}</p>
+          </div>
+          <Link to={`/post/${type}`} className={buttonStyles('primary', 'md')}>
+            <Plus className="h-4 w-4" /> {t('nav_post')}
+          </Link>
         </div>
 
         <FilterBar

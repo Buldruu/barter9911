@@ -52,6 +52,14 @@ export function App() {
                   }
                 />
                 <Route
+                  path="/post/:type"
+                  element={
+                    <ProtectedRoute>
+                      <PostItem />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
                   path="/dashboard"
                   element={
                     <ProtectedRoute>

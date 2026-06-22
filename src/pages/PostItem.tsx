@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { CheckCircle2, Gavel, Plus, Repeat, Tag } from 'lucide-react'
 import { PageTransition } from '../components/PageTransition'
 import { ImageUploader } from '../components/ImageUploader'
@@ -54,8 +54,13 @@ export function PostItem() {
   const { t, lang } = useLanguage()
   const { configured, firebaseUser, profile } = useAuth()
   const navigate = useNavigate()
+  const { type: typeParam } = useParams<{ type?: string }>()
+  const lockedType: ListingType | null =
+    typeParam === 'barter' || typeParam === 'auction' || typeParam === 'sale'
+      ? typeParam
+      : null
 
-  const [type, setType] = useState<ListingType>('barter')
+  const [type, setType] = useState<ListingType>(lockedType ?? 'barter')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
@@ -72,6 +77,10 @@ export function PostItem() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [doneId, setDoneId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (lockedType) setType(lockedType)
+  }, [lockedType])
 
   const catOptions = CATEGORIES.map((c) => ({
     value: c.id,
@@ -160,7 +169,7 @@ export function PostItem() {
   }
 
   function reset() {
-    setType('barter')
+    setType(lockedType ?? 'barter')
     setTitle('')
     setDescription('')
     setCategory('')
@@ -218,6 +227,12 @@ export function PostItem() {
           <p className="mt-2 text-slate-500">{t('p_subtitle')}</p>
         </div>
 
+        {lockedType ? (
+          <div className="mb-8 inline-flex items-center gap-2 rounded-xl border border-primary-200 bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-700">
+            {t(lockedType === 'barter' ? 'p_typeBarter' : lockedType === 'auction' ? 'p_typeAuction' : 'p_typeSale')}
+          </div>
+        ) : (
+          <>
         {/* Type selector */}
         <p className="mb-3 text-sm font-semibold text-navy">{t('p_chooseType')}</p>
         <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -250,6 +265,8 @@ export function PostItem() {
             )
           })}
         </div>
+          </>
+        )}
 
         {/* Core fields */}
         <div className="space-y-5">

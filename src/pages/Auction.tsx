@@ -1,5 +1,8 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Plus } from 'lucide-react'
 import { PageTransition } from '../components/PageTransition'
+import { buttonStyles } from '../components/ui/Button'
 import { AuctionCard } from '../components/AuctionCard'
 import { ConfigNotice } from '../components/ConfigNotice'
 import { CardGridSkeleton } from '../components/ui/LoadingSkeleton'
@@ -33,11 +36,16 @@ export function Auction() {
   return (
     <PageTransition>
       <div className="container-app py-10">
-        <div className="mb-6">
-          <h1 className="text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
-            {t('a_title')}
-          </h1>
-          <p className="mt-2 text-slate-500">{t('a_subtitle')}</p>
+        <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
+              {t('a_title')}
+            </h1>
+            <p className="mt-2 text-slate-500">{t('a_subtitle')}</p>
+          </div>
+          <Link to="/post/auction" className={buttonStyles('primary', 'md')}>
+            <Plus className="h-4 w-4" /> {t('nav_post')}
+          </Link>
         </div>
 
         <div className="mb-8 inline-flex rounded-xl border border-slate-200 bg-white p-1">
