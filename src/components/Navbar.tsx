@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
@@ -223,11 +224,14 @@ export function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile drawer */}
-      <AnimatePresence>
+      {/* Mobile drawer — portaled to <body> so the header's backdrop-blur
+          does not trap the fixed positioning (it would otherwise be sized to
+          the 64px header instead of the full screen). */}
+      {createPortal(
+        <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-50 lg:hidden"
+            className="fixed inset-0 z-[60]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -340,7 +344,9 @@ export function Navbar() {
             </motion.aside>
           </motion.div>
         )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
     </header>
   )
 }
