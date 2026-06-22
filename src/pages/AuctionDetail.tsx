@@ -94,11 +94,17 @@ export function AuctionDetail() {
     auction.image ||
     listing?.imageUrls?.[0] ||
     placeholderImage(auction.id || 'auction')
+  const isOwner =
+    !!firebaseUser && !!listing && firebaseUser.uid === listing.userId
 
   async function handleBid() {
     if (!auction) return
     if (!firebaseUser) {
       navigate('/login', { state: { from: `/auction/${auction.id}` } })
+      return
+    }
+    if (isOwner) {
+      setError(t('c_ownListing'))
       return
     }
     const value = Number(amount)
@@ -216,7 +222,12 @@ export function AuctionDetail() {
             </div>
 
             {/* Bid form */}
-            {!ended && (
+            {isOwner && !ended && (
+              <p className="mt-5 rounded-xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-500">
+                {t('c_ownListing')}
+              </p>
+            )}
+            {!ended && !isOwner && (
               <div className="mt-5">
                 <div className="flex items-end gap-3">
                   <div className="flex-1">
