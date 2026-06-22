@@ -87,10 +87,16 @@ export function ListingDetail() {
       ? listing.imageUrls
       : [placeholderImage(listing.id)]
 
+  const isOwner = !!firebaseUser && firebaseUser.uid === listing.userId
+
   async function submitOffer() {
     if (!listing) return
     if (!firebaseUser) {
       navigate('/login', { state: { from: `/item/${listing.id}` } })
+      return
+    }
+    if (firebaseUser.uid === listing.userId) {
+      setError(t('c_ownListing'))
       return
     }
     if (!offeredItem.trim() || !message.trim()) {
@@ -105,6 +111,8 @@ export function ListingDetail() {
         listingTitle: listing.title,
         fromUserId: firebaseUser.uid,
         fromUserName: profile?.name ?? firebaseUser.displayName ?? 'Member',
+        fromUserPhone: profile?.phone ?? '',
+        toUserId: listing.userId,
         message: message.trim(),
         offeredItem: offeredItem.trim(),
       })
@@ -255,7 +263,11 @@ export function ListingDetail() {
 
             {/* Actions */}
             <div className="mt-6 flex flex-wrap gap-3">
-              {isBarter ? (
+              {isOwner && !isAuction ? (
+                <p className="rounded-xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-500">
+                  {t('c_ownListing')}
+                </p>
+              ) : isBarter ? (
                 <Button
                   size="lg"
                   onClick={() => {

@@ -54,6 +54,8 @@ export interface BarterOffer {
   listingTitle?: string
   fromUserId: string
   fromUserName?: string
+  fromUserPhone?: string
+  toUserId?: string
   message: string
   offeredItem: string
   status: OfferStatus

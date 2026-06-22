@@ -5,6 +5,7 @@ import {
   Gavel,
   LayoutGrid,
   Pencil,
+  Phone,
   Plus,
   Repeat,
   Trash2,
@@ -20,10 +21,12 @@ import { useLanguage } from '../i18n/LanguageContext'
 import { useAsyncData } from '../hooks/useAsyncData'
 import {
   deleteListing,
+  getReceivedOffers,
   getUserBids,
   getUserListings,
   getUserOffers,
   setListingStatus,
+  setOfferStatus,
   updateUserProfile,
 } from '../firebase/firestore'
 import { categoryLabel } from '../lib/constants'
@@ -51,6 +54,10 @@ export function Dashboard() {
     () => (uid && configured ? getUserOffers(uid) : Promise.resolve([])),
     [uid, configured]
   )
+  const received = useAsyncData(
+    () => (uid && configured ? getReceivedOffers(uid) : Promise.resolve([])),
+    [uid, configured]
+  )
   const bids = useAsyncData(
     () => (uid && configured ? getUserBids(uid) : Promise.resolve([])),
     [uid, configured]
@@ -72,6 +79,11 @@ export function Dashboard() {
     if (!window.confirm(t('d_deleteConfirm'))) return
     await deleteListing(id)
     listings.reload()
+  }
+
+  async function handleOfferStatus(id: string, status: 'accepted' | 'rejected') {
+    await setOfferStatus(id, status)
+    received.reload()
   }
 
   async function saveProfile() {
@@ -246,39 +258,111 @@ export function Dashboard() {
           ))}
 
         {/* Offers */}
-        {tab === 'offers' &&
-          ((offers.data ?? []).length === 0 ? (
-            <EmptyState title={t('d_noOffers')} />
-          ) : (
-            <div className="space-y-3">
-              {(offers.data ?? []).map((o) => (
-                <div
-                  key={o.id}
-                  className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
-                >
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-bold text-navy">{o.listingTitle}</h3>
-                    <span
-                      className={cn(
-                        'rounded-md px-2 py-0.5 text-xs font-semibold capitalize',
-                        classForStatus(o.status === 'accepted' ? 'active' : o.status)
-                      )}
+        {tab === 'offers' && (
+          <div className="space-y-8">
+            <div>
+              <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-navy">
+                {t('d_received')}
+              </h3>
+              {(received.data ?? []).length === 0 ? (
+                <EmptyState title={t('d_noReceived')} />
+              ) : (
+                <div className="space-y-3">
+                  {(received.data ?? []).map((o) => (
+                    <div
+                      key={o.id}
+                      className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
                     >
-                      {o.status}
-                    </span>
-                  </div>
-                  <p className="mt-1 text-sm text-slate-600">
-                    <span className="font-semibold">{t('b_offeredItem')}:</span>{' '}
-                    {o.offeredItem}
-                  </p>
-                  <p className="mt-1 text-sm text-slate-500">{o.message}</p>
-                  <p className="mt-1 text-xs text-slate-400">
-                    {formatDate(o.createdAt)}
-                  </p>
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-bold text-navy">{o.listingTitle}</h3>
+                        <span
+                          className={cn(
+                            'rounded-md px-2 py-0.5 text-xs font-semibold capitalize',
+                            classForStatus(
+                              o.status === 'accepted' ? 'active' : o.status
+                            )
+                          )}
+                        >
+                          {o.status}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm text-slate-600">
+                        <span className="font-semibold">{o.fromUserName}</span> —{' '}
+                        {o.offeredItem}
+                      </p>
+                      <p className="mt-1 text-sm text-slate-500">{o.message}</p>
+                      {o.fromUserPhone && (
+                        <a
+                          href={`tel:${o.fromUserPhone}`}
+                          className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-primary-600"
+                        >
+                          <Phone className="h-3.5 w-3.5" /> {o.fromUserPhone}
+                        </a>
+                      )}
+                      {o.status === 'pending' && (
+                        <div className="mt-3 flex gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => handleOfferStatus(o.id, 'accepted')}
+                          >
+                            {t('o_accept')}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleOfferStatus(o.id, 'rejected')}
+                          >
+                            {t('o_reject')}
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
-          ))}
+
+            <div>
+              <h3 className="mb-3 text-sm font-bold uppercase tracking-wide text-navy">
+                {t('d_sent')}
+              </h3>
+              {(offers.data ?? []).length === 0 ? (
+                <EmptyState title={t('d_noOffers')} />
+              ) : (
+                <div className="space-y-3">
+                  {(offers.data ?? []).map((o) => (
+                    <div
+                      key={o.id}
+                      className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm"
+                    >
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-bold text-navy">{o.listingTitle}</h3>
+                        <span
+                          className={cn(
+                            'rounded-md px-2 py-0.5 text-xs font-semibold capitalize',
+                            classForStatus(
+                              o.status === 'accepted' ? 'active' : o.status
+                            )
+                          )}
+                        >
+                          {o.status}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm text-slate-600">
+                        <span className="font-semibold">{t('b_offeredItem')}:</span>{' '}
+                        {o.offeredItem}
+                      </p>
+                      <p className="mt-1 text-sm text-slate-500">{o.message}</p>
+                      <p className="mt-1 text-xs text-slate-400">
+                        {formatDate(o.createdAt)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Bids */}
         {tab === 'bids' &&

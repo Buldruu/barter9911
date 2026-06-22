@@ -111,6 +111,8 @@ function mapOffer(id: string, d: DocumentData): BarterOffer {
     listingTitle: d.listingTitle ?? '',
     fromUserId: d.fromUserId ?? '',
     fromUserName: d.fromUserName ?? 'Member',
+    fromUserPhone: d.fromUserPhone ?? '',
+    toUserId: d.toUserId ?? '',
     message: d.message ?? '',
     offeredItem: d.offeredItem ?? '',
     status: (d.status ?? 'pending') as OfferStatus,
@@ -405,6 +407,8 @@ export interface NewOffer {
   listingTitle: string
   fromUserId: string
   fromUserName: string
+  fromUserPhone?: string
+  toUserId: string
   message: string
   offeredItem: string
 }
@@ -413,6 +417,7 @@ export async function createBarterOffer(input: NewOffer): Promise<string> {
   const db = requireDb()
   const ref = await addDoc(collection(db, 'barterOffers'), {
     ...input,
+    fromUserPhone: input.fromUserPhone ?? '',
     status: 'pending' as OfferStatus,
     createdAt: serverTimestamp(),
   })
@@ -424,6 +429,19 @@ export async function getUserOffers(userId: string): Promise<BarterOffer[]> {
   const q = query(
     collection(db, 'barterOffers'),
     where('fromUserId', '==', userId)
+  )
+  const snap = await getDocs(q)
+  return snap.docs
+    .map((d) => mapOffer(d.id, d.data()))
+    .sort((a, b) => b.createdAt - a.createdAt)
+}
+
+// Offers received on listings owned by this user.
+export async function getReceivedOffers(userId: string): Promise<BarterOffer[]> {
+  const db = requireDb()
+  const q = query(
+    collection(db, 'barterOffers'),
+    where('toUserId', '==', userId)
   )
   const snap = await getDocs(q)
   return snap.docs

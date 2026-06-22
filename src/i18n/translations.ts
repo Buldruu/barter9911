@@ -194,6 +194,12 @@ export const en = {
   d_saveProfile: 'Save profile',
   d_profileSaved: 'Profile updated.',
   d_postFirst: 'Post your first item',
+  d_received: 'Offers on my listings',
+  d_sent: 'Offers I sent',
+  d_noReceived: 'No offers received yet.',
+  o_accept: 'Accept',
+  o_reject: 'Reject',
+  c_ownListing: 'This is your own listing.',
 
   // Admin
   ad_title: 'Admin dashboard',
@@ -439,6 +445,12 @@ export const mn: Record<TranslationKey, string> = {
   d_saveProfile: 'Профайл хадгалах',
   d_profileSaved: 'Профайл шинэчлэгдлээ.',
   d_postFirst: 'Эхний зараа нэмэх',
+  d_received: 'Миний зар дээрх санал',
+  d_sent: 'Миний илгээсэн санал',
+  d_noReceived: 'Одоогоор санал ирээгүй байна.',
+  o_accept: 'Зөвшөөрөх',
+  o_reject: 'Татгалзах',
+  c_ownListing: 'Энэ бол таны өөрийн зар.',
 
   ad_title: 'Админ самбар',
   ad_subtitle: 'Платформын тойм ба хяналт',
