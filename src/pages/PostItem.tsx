@@ -17,7 +17,7 @@ import {
 } from '../lib/constants'
 import { cn, durationToMs } from '../lib/utils'
 import { createAuction, createListing } from '../firebase/firestore'
-import { uploadListingImages } from '../firebase/storage'
+import { compressImages } from '../lib/image'
 import type { Condition, ListingType } from '../types'
 
 const TYPE_CARDS: {
@@ -119,7 +119,7 @@ export function PostItem() {
     try {
       let imageUrls: string[] = []
       if (images.length > 0) {
-        imageUrls = await uploadListingImages(images, firebaseUser.uid)
+        imageUrls = await compressImages(images)
       }
 
       const listingId = await createListing({

@@ -157,3 +157,19 @@ Admin access is controlled by the `role` field on the user's Firestore document.
 ## 📄 License
 
 MIT — free to use and adapt.
+
+---
+
+## 🧯 Troubleshooting
+
+**`Get Pages site failed ... Error: Not Found` / `HttpError: Not Found` on the `Setup Pages` step**
+GitHub Pages isn't enabled for the repo yet, so `actions/configure-pages` can't find a Pages site. Fix it either way:
+
+1. **Recommended:** Repo → **Settings → Pages → Build and deployment → Source = GitHub Actions**, then re-run the workflow.
+2. The workflow already passes `enablement: true` to `actions/configure-pages@v5`, which auto-enables Pages on the first run. For this to work, the repo must allow it: **Settings → Actions → General → Workflow permissions → Read and write permissions**.
+
+**`Node.js 20 is deprecated ...` warning**
+Harmless. It refers to the runtime of the GitHub-maintained actions (checkout, setup-node, configure-pages), not your build. It does not fail the workflow and can be ignored until those actions publish Node 24 builds.
+
+**Blank page after deploy**
+Make sure `vite.config.ts` keeps `base: './'` and the app uses `HashRouter` (both already configured). Also confirm the `Source` is set to **GitHub Actions**, not "Deploy from a branch".
