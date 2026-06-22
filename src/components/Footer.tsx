@@ -34,6 +34,7 @@ export function Footer() {
             <li><Link to="/auction" className="hover:text-primary-600">{t('nav_auction')}</Link></li>
             <li><Link to="/marketplace" className="hover:text-primary-600">{t('nav_marketplace')}</Link></li>
             <li><Link to="/about" className="hover:text-primary-600">{t('nav_about')}</Link></li>
+            <li><Link to="/terms" className="hover:text-primary-600">{t('nav_terms')}</Link></li>
           </ul>
         </div>
 

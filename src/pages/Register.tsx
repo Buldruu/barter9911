@@ -25,6 +25,7 @@ export function Register() {
   const [facebookUrl, setFacebookUrl] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
+  const [agree, setAgree] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [social, setSocial] = useState<'' | 'google' | 'facebook'>('')
@@ -41,6 +42,7 @@ export function Register() {
     if (!isValidPhone(phone)) return setError(t('au_invalidPhone'))
     if (password.length < 6) return setError(t('au_weakPassword'))
     if (password !== confirm) return setError(t('au_passwordsNoMatch'))
+    if (!agree) return setError(t('t_mustAgree'))
 
     setLoading(true)
     setError('')
@@ -61,6 +63,10 @@ export function Register() {
   }
 
   async function handleSocial(kind: 'google' | 'facebook') {
+    if (!agree) {
+      setError(t('t_mustAgree'))
+      return
+    }
     setSocial(kind)
     setError('')
     try {
@@ -146,6 +152,24 @@ export function Register() {
             autoComplete="new-password"
           />
         </div>
+        <label className="flex items-start gap-2.5 text-sm text-slate-600">
+          <input
+            type="checkbox"
+            checked={agree}
+            onChange={(e) => setAgree(e.target.checked)}
+            className="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+          />
+          <span>
+            {t('t_agree')}{' '}
+            <Link
+              to="/terms"
+              target="_blank"
+              className="font-semibold text-primary-600 hover:underline"
+            >
+              {t('nav_terms')}
+            </Link>
+          </span>
+        </label>
         {error && (
           <p className="rounded-xl bg-rose-50 px-4 py-2.5 text-sm font-medium text-rose-600">
             {error}

@@ -151,7 +151,7 @@ export const en = {
   p_duration: 'Auction duration',
   p_publish: 'Publish listing',
   p_publishing: 'Publishing…',
-  p_success: 'Your listing was submitted and is pending approval.',
+  p_success: 'Your listing is now live.',
   p_mustLogin: 'You must be logged in to post an item.',
 
   // Auth
@@ -257,6 +257,9 @@ export const en = {
   nf_title: 'Page not found',
   nf_desc: 'The page you’re looking for doesn’t exist or has moved.',
   nf_home: 'Back to home',
+  nav_terms: 'Terms',
+  t_agree: 'I accept the Terms of Service',
+  t_mustAgree: 'Please accept the terms to continue.',
 } as const
 
 export type TranslationKey = keyof typeof en
@@ -266,7 +269,7 @@ export const mn: Record<TranslationKey, string> = {
   nav_home: 'Нүүр',
   nav_barter: 'Бартер',
   nav_auction: 'Дуудлага худалдаа',
-  nav_marketplace: 'Зах зээл',
+  nav_marketplace: 'Худалдаа',
   nav_post: 'Зар нэмэх',
   nav_about: 'Бидний тухай',
   nav_contact: 'Холбоо барих',
@@ -374,7 +377,7 @@ export const mn: Record<TranslationKey, string> = {
   a_won: 'Хожсон',
   a_reachedMax: 'Дээд үнэд хүрсэн — дуудлага хаагдсан.',
 
-  m_title: 'Зах зээл',
+  m_title: 'Худалдаа',
   m_subtitle: 'Итгэлтэй худалдагчдаас чанартай бараа аваарай',
   m_contact: 'Худалдагчтай холбогдох',
   m_seller: 'Худалдагчийн мэдээлэл',
@@ -404,7 +407,7 @@ export const mn: Record<TranslationKey, string> = {
   p_duration: 'Дуудлагын хугацаа',
   p_publish: 'Зар нийтлэх',
   p_publishing: 'Нийтэлж байна…',
-  p_success: 'Таны зар илгээгдэж, баталгаажуулалт хүлээж байна.',
+  p_success: 'Таны зар амжилттай тавигдлаа.',
   p_mustLogin: 'Зар нэмэхийн тулд нэвтэрсэн байх шаардлагатай.',
 
   au_loginTitle: 'Тавтай морилно уу',
@@ -503,6 +506,9 @@ export const mn: Record<TranslationKey, string> = {
   nf_title: 'Хуудас олдсонгүй',
   nf_desc: 'Таны хайж буй хуудас байхгүй эсвэл шилжсэн байна.',
   nf_home: 'Нүүр хуудас руу',
+  nav_terms: 'Дүрэм',
+  t_agree: 'Үйлчилгээний нөхцөл (дүрэм)-ийг зөвшөөрч байна',
+  t_mustAgree: 'Үргэлжлүүлэхийн тулд дүрмийг зөвшөөрнө үү.',
 }
 
 export const dictionaries = { en, mn }

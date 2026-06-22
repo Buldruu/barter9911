@@ -73,6 +73,7 @@ export function PostItem() {
   const [maxPrice, setMaxPrice] = useState('')
   const [unlimited, setUnlimited] = useState(false)
   const [duration, setDuration] = useState('7d')
+  const [agree, setAgree] = useState(false)
 
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -110,6 +111,7 @@ export function PostItem() {
       if (!unlimited && maxPrice && Number(maxPrice) <= Number(startingPrice))
         return t('a_mustBeHigher')
     }
+    if (!agree) return t('t_mustAgree')
     return null
   }
 
@@ -182,6 +184,7 @@ export function PostItem() {
     setMaxPrice('')
     setUnlimited(false)
     setDuration('7d')
+    setAgree(false)
     setDoneId(null)
     setError('')
   }
@@ -371,6 +374,25 @@ export function PostItem() {
               />
             </div>
           )}
+
+          <label className="flex items-start gap-2.5 text-sm text-slate-600">
+            <input
+              type="checkbox"
+              checked={agree}
+              onChange={(e) => setAgree(e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+            />
+            <span>
+              {t('t_agree')}{' '}
+              <Link
+                to="/terms"
+                target="_blank"
+                className="font-semibold text-primary-600 hover:underline"
+              >
+                {t('nav_terms')}
+              </Link>
+            </span>
+          </label>
 
           {error && (
             <p className="rounded-xl bg-rose-50 px-4 py-3 text-sm font-medium text-rose-600">
