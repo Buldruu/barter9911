@@ -244,21 +244,43 @@ export function ListingDetail() {
               </p>
             </div>
 
-            {/* Owner */}
-            <div className="mt-6 flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-100 text-primary-700">
-                <User className="h-5 w-5" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-semibold text-navy">
-                  {owner?.name ?? listing.ownerName ?? 'Member'}
-                </p>
-                {owner && (
-                  <p className="text-xs text-slate-400">
-                    {t('d_welcome')} · {formatDate(owner.createdAt)}
+            {/* Seller / contact */}
+            <div className="mt-6 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-100 text-primary-700">
+                  <User className="h-5 w-5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs uppercase tracking-wide text-slate-400">
+                    {t('c_postedBy')}
                   </p>
-                )}
+                  <p className="truncate font-semibold text-navy">
+                    {owner?.name ?? listing.ownerName ?? 'Member'}
+                  </p>
+                </div>
               </div>
+              {(owner?.phone || owner?.facebookUrl) && (
+                <div className="mt-3 flex flex-wrap gap-2 border-t border-slate-50 pt-3">
+                  {owner?.phone && (
+                    <a
+                      href={`tel:${owner.phone}`}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 px-3 py-1.5 text-sm font-medium text-navy hover:bg-slate-100"
+                    >
+                      <Phone className="h-4 w-4 text-primary-600" /> {owner.phone}
+                    </a>
+                  )}
+                  {owner?.facebookUrl && (
+                    <a
+                      href={owner.facebookUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 px-3 py-1.5 text-sm font-medium text-navy hover:bg-slate-100"
+                    >
+                      <Facebook className="h-4 w-4 text-primary-600" /> Facebook
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Actions */}
