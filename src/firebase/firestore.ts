@@ -379,8 +379,8 @@ export async function placeBid(
     if (a.status !== 'active' || Date.now() >= a.endTime) {
       throw new Error('This auction has ended.')
     }
-    if (amount <= a.currentPrice) {
-      throw new Error('Your bid must be higher than the current bid.')
+    if (amount < a.currentPrice + 10000) {
+      throw new Error('Bid must be at least 10,000₮ higher than the current bid.')
     }
 
     let finalAmount = amount

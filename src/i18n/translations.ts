@@ -117,6 +117,7 @@ export const en = {
   a_mustBeHigher: 'Your bid must be higher than the current bid.',
   a_placed: 'Bid placed successfully!',
   a_minNext: 'Minimum next bid',
+  a_minIncrement: 'Your bid must be at least 10,000₮ higher than the current bid.',
   a_won: 'Won by',
   a_reachedMax: 'Maximum price reached — auction closed.',
 
@@ -376,6 +377,7 @@ export const mn: Record<TranslationKey, string> = {
   a_mustBeHigher: 'Таны үнэ одоогийн үнээс өндөр байх ёстой.',
   a_placed: 'Үнэ амжилттай хаялаа!',
   a_minNext: 'Дараагийн доод үнэ',
+  a_minIncrement: 'Таны үнэ одоогийн үнээс дор хаяж 10,000₮-өөр өндөр байх ёстой.',
   a_won: 'Хожсон',
   a_reachedMax: 'Дээд үнэд хүрсэн — дуудлага хаагдсан.',
 

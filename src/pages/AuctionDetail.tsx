@@ -32,7 +32,7 @@ import {
 import { categoryLabel, locationLabel } from '../lib/constants'
 import { cn, formatDate, formatMNT, placeholderImage } from '../lib/utils'
 
-const BID_STEP = 1000
+const BID_STEP = 10000
 
 export function AuctionDetail() {
   const { id } = useParams<{ id: string }>()
@@ -118,8 +118,8 @@ export function AuctionDetail() {
       return
     }
     const value = Number(amount)
-    if (!Number.isFinite(value) || value <= auction.currentPrice) {
-      setError(t('a_mustBeHigher'))
+    if (!Number.isFinite(value) || value < auction.currentPrice + BID_STEP) {
+      setError(t('a_minIncrement'))
       return
     }
     setPlacing(true)
@@ -245,9 +245,9 @@ export function AuctionDetail() {
                       type="number"
                       label={t('a_yourBid')}
                       value={amount}
-                      min={auction.currentPrice + 1}
+                      min={auction.currentPrice + BID_STEP}
                       onChange={(e) => setAmount(e.target.value)}
-                      hint={`${t('a_minNext')}: ${formatMNT(auction.currentPrice + 1)}`}
+                      hint={`${t('a_minNext')}: ${formatMNT(auction.currentPrice + BID_STEP)}`}
                     />
                   </div>
                   <Button size="lg" onClick={handleBid} loading={placing}>
